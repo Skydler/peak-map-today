@@ -103,8 +103,7 @@ const App = () => {
                   <span>☀️</span>
                 </div>
                 <div className="biome-details">
-                  Stay in the shade • Find sunscreen • Avoid tumbleweeds •
-                  Discover The Tomb
+                  Stay in the shade • Find sunscreen • Avoid tumbleweeds
                 </div>
               </div>
             ) : (
@@ -115,7 +114,7 @@ const App = () => {
                   <span>🏔️</span>
                 </div>
                 <div className="biome-details">
-                  Stay warm • Avoid blizzards • Find shelter • Climb to safety
+                  Stay warm • Avoid blizzards • Find shelter
                 </div>
               </div>
             )}
