@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const epoch_date = new Date("2025-09-24T17:00:00.000Z");
+// Known date with a specific map (MESA)
+const epoch_date = new Date("2025-10-21T17:00:00.000Z");
 
 const App = () => {
   const [currentMap, setCurrentMap] = useState("");
