@@ -2,7 +2,9 @@ import fs from "node:fs";
 import * as cheerio from "cheerio";
 import puppeteer from "puppeteer";
 
-const browser = await puppeteer.launch();
+const browser = await puppeteer.launch({
+  args: ["--no-sandbox", "--disable-setuid-sandbox"], // necessary for github action runner
+});
 const page = await browser.newPage();
 await page.goto("https://peak.wiki.gg");
 const bodyHTML = await page.evaluate(() => document.body.innerHTML);
