@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-
-// Known date with a specific map (MESA)
-const epoch_date = new Date("2025-10-21T17:00:00.000Z");
+import MapToday from "./assets/map.json";
 
 const App = () => {
-  const [currentMap, setCurrentMap] = useState("");
+  const currentMap = MapToday.map.toUpperCase();
   const [timeUntilReset, setTimeUntilReset] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -13,14 +11,6 @@ const App = () => {
     const updateMapAndTime = () => {
       const now = new Date();
       setCurrentTime(now);
-
-      // Calculate days since epoch
-      const daysSinceEpoch = Math.floor(
-        (now.getTime() - epoch_date.getTime()) / (1000 * 60 * 60 * 24),
-      );
-
-      const isMesa = daysSinceEpoch % 2 === 0;
-      setCurrentMap(isMesa ? "MESA" : "ALPINE");
 
       // Calculate time until next reset (17:00 UTC)
       const nextReset = new Date();
