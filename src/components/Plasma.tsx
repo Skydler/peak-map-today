@@ -54,6 +54,11 @@ void mainImage(out vec4 o, vec2 C) {
   
   float i, d, z, T = iTime * uSpeed * uDirection;
   vec3 O, p, S;
+  
+  // Calculate vertical position (0 at bottom, 1 at top)
+  float verticalPos = C.y / iResolution.y;
+  // Damping factor: less movement at bottom (0.15), more at top (1.0)
+  float xConstraint = mix(0.15, 1.0, smoothstep(0.0, 0.5, verticalPos));
 
   for (vec2 r = iResolution.xy, Q; ++i < 60.; O += o.w/d*o.xyz) {
     p = z*normalize(vec3(C-.5*r,r.y)); 
@@ -61,7 +66,8 @@ void mainImage(out vec4 o, vec2 C) {
     S = p;
     d = p.y-T;
     
-    p.x += .4*(1.+p.y)*sin(d + p.x*0.1)*cos(.34*d + p.x*0.05); 
+    // Apply constraint to X movement
+    p.x += .4*(1.+p.y)*sin(d + p.x*0.1)*cos(.34*d + p.x*0.05) * xConstraint; 
     Q = p.xz *= mat2(cos(p.y+vec4(0,11,33,0)-T)); 
     z+= d = abs(sqrt(length(Q*Q)) - .25*(5.+S.y))/3.+8e-4; 
     o = 1.+sin(S.y+p.z*.5+S.z-length(S-p)+vec4(2,1,0,8));
