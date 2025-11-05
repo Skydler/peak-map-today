@@ -46,6 +46,10 @@
 }
 
 .mesa-theme {
+  color: black;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-style: bold;
+  font-size: 1.5rem;
   background: linear-gradient(to bottom, #fb923c, #eab308, #dc2626);
 }
 
