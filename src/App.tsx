@@ -1,30 +1,23 @@
 import MapToday from "./assets/map.json";
-import Plasma from "./components/Plasma";
-import CampfireIcon from "./assets/campfire.png";
+import CampfireBackground from "./ui/CampfireBackground";
+import MapCard from "./ui/MapCard";
+import MesaImage from "./assets/mesa.png";
+import AlpineImage from "./assets/alpine.png";
 
 const App = () => {
   const currentMap = MapToday.map.toUpperCase();
 
   return (
-    <div className="h-screen w-screen bg-yellow-100">
-      <div className="h-full w-full">
-        <div className="h-full w-full absolute top-0 left-0">
-          <Plasma
-            color="#000000"
-            speed={0.9}
-            direction="forward"
-            scale={0.4}
-            opacity={0.1}
-            mouseInteractive={false}
-          />
+    <div>
+      <CampfireBackground />
+      <div className="h-screen w-screen bg-yellow-50 z-10">
+        <div className="text-center">
+          <h1 className="text-8xl font-bold p-10">PEAK</h1>
+          <p className="text-2xl">Today's maps are:</p>
         </div>
-        <div>
-          <img
-            className="absolute bottom-0 left-1/2 transform -translate-x-1/2"
-            src={CampfireIcon}
-            height={200}
-            width={200}
-          />
+        <div className="flex flex-row justify-center gap-24 p-10">
+          <MapCard mapImagePath={MesaImage} mapName="Mesa" />
+          <MapCard mapImagePath={AlpineImage} mapName="Alpine" />
         </div>
       </div>
     </div>
