@@ -10,7 +10,7 @@ function CampfireBackground() {
           speed={0.7}
           direction="forward"
           scale={0.4}
-          opacity={0.3}
+          opacity={0.2}
           mouseInteractive={false}
         />
       </div>
