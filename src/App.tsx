@@ -1,9 +1,9 @@
 import CampfireBackgroundLayout from "./ui/CampfireBackground";
 import MapCard from "./ui/MapCard";
-import MesaImage from "./assets/mesa.png";
-import AlpineImage from "./assets/alpine.png";
+import MesaImage from "./assets/mesa.jpg";
+import AlpineImage from "./assets/alpine.jpg";
 import RootsImage from "./assets/roots.jpg";
-import TropicsImage from "./assets/tropics.png";
+import TropicsImage from "./assets/tropics.jpg";
 import MapToday from "./assets/map.json";
 import CountdownTimer from "./ui/CountDownTimer";
 
