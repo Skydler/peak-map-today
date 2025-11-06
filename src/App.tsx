@@ -32,20 +32,23 @@ const App = () => {
   const timeDiff = nextReset.getTime() - now.getTime();
 
   return (
-    <div className="min-h-[1100px] relative bg-linear-to-t to-violet-500 from-rose-300 ">
+    <div className="min-h-[1080px] relative bg-linear-to-t to-violet-500 from-rose-300">
       <CampfireBackground />
       <div className="h-screen w-screen">
         <div className="text-center text-white font-display">
           <h1 className="text-9xl font-bold p-10">PEAK</h1>
           <p className="text-2xl">Today's maps are</p>
         </div>
-        <div className="flex flex-col md:flex-row justify-center gap-1 md:gap-24 m-10 h-[500px]">
+        <div className="flex flex-col md:flex-row justify-center gap-5 md:gap-24 m-10">
           {mapMapping[currentMaps.map2]}
           {mapMapping[currentMaps.map3]}
         </div>
         <div className="text-center text-white font-display p-10 z-10 text-4xl">
           <p>Come back tomorrow for a new map rotation!</p>
-          <CountdownTimer initialRemainingTime={timeDiff} className="mt-4" />
+          <CountdownTimer
+            initialRemainingTime={timeDiff}
+            className="mt-4 text-3xl sm:text-4xl md:text-5xl"
+          />
         </div>
       </div>
     </div>
