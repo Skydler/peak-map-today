@@ -1,10 +1,54 @@
-import "./App.css";
+import CampfireBackgroundLayout from "./ui/CampfireBackground";
+import MapCard from "./ui/MapCard";
+import MesaImage from "./assets/mesa.png";
+import AlpineImage from "./assets/alpine.png";
+import RootsImage from "./assets/roots.jpg";
+import TropicsImage from "./assets/tropics.png";
+import MapToday from "./assets/map.json";
+import CountdownTimer from "./ui/CountDownTimer";
+
+type MapKey = "MESA" | "ALPINE" | "ROOTS" | "TROPICS";
+type CurrentMapsType = {
+  map2: MapKey;
+  map3: MapKey;
+};
+
+const mapMapping = {
+  TROPICS: <MapCard mapImagePath={TropicsImage} mapName="Tropics" />,
+  ROOTS: <MapCard mapImagePath={RootsImage} mapName="Roots" />,
+  ALPINE: <MapCard mapImagePath={AlpineImage} mapName="Alpine" />,
+  MESA: <MapCard mapImagePath={MesaImage} mapName="Mesa" />,
+};
 
 const App = () => {
+  const currentMaps = MapToday as CurrentMapsType;
+
+  const now = new Date();
+  const nextReset = new Date();
+  nextReset.setUTCHours(17, 0, 0, 0);
+  if (now.getUTCHours() >= 17) {
+    nextReset.setUTCDate(nextReset.getUTCDate() + 1);
+  }
+  const timeDiff = nextReset.getTime() - now.getTime();
+
   return (
-    <div className="container mesa-theme">
-      Under maintainance due to the roots update. See you soon!
-    </div>
+    <CampfireBackgroundLayout>
+      <div className="text-center text-white font-display">
+        <h1 className="text-9xl font-bold p-10">PEAK</h1>
+        <p className="text-2xl">Today's maps are</p>
+      </div>
+      <div className="flex flex-col md:flex-row justify-center gap-5 md:gap-24 m-10">
+        {mapMapping[currentMaps.map2]}
+        {mapMapping[currentMaps.map3]}
+      </div>
+      <div className="text-center text-white font-display p-10 text-2xl md:text-4xl">
+        <p>Come back tomorrow for a new map rotation!</p>
+        <CountdownTimer
+          initialRemainingTime={timeDiff}
+          className="mt-4 text-3xl sm:text-4xl md:text-5xl"
+        />
+      </div>
+    </CampfireBackgroundLayout>
   );
 };
 
