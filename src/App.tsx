@@ -5,6 +5,7 @@ import AlpineImage from "./assets/alpine.png";
 import RootsImage from "./assets/roots.jpg";
 import TropicsImage from "./assets/tropics.png";
 import MapToday from "./assets/map.json";
+import CountdownTimer from "./ui/CountDownTimer";
 
 type MapKey = "MESA" | "ALPINE" | "ROOTS" | "TROPICS";
 type CurrentMapsType = {
@@ -22,6 +23,14 @@ const mapMapping = {
 const App = () => {
   const currentMaps = MapToday as CurrentMapsType;
 
+  const now = new Date();
+  const nextReset = new Date();
+  nextReset.setUTCHours(17, 0, 0, 0);
+  if (now.getUTCHours() >= 17) {
+    nextReset.setUTCDate(nextReset.getUTCDate() + 1);
+  }
+  const timeDiff = nextReset.getTime() - now.getTime();
+
   return (
     <div className="min-h-[1100px] relative bg-linear-to-t to-violet-500 from-rose-300 ">
       <CampfireBackground />
@@ -30,9 +39,13 @@ const App = () => {
           <h1 className="text-9xl font-bold p-10">PEAK</h1>
           <p className="text-2xl">Today's maps are</p>
         </div>
-        <div className="flex flex-col md:flex-row justify-center gap-1 md:gap-24 p-10">
+        <div className="flex flex-col md:flex-row justify-center gap-1 md:gap-24 m-10 h-[500px]">
           {mapMapping[currentMaps.map2]}
           {mapMapping[currentMaps.map3]}
+        </div>
+        <div className="text-center text-white font-display p-10 z-10 text-4xl">
+          <p>Come back tomorrow for a new map rotation!</p>
+          <CountdownTimer initialRemainingTime={timeDiff} className="mt-4" />
         </div>
       </div>
     </div>
