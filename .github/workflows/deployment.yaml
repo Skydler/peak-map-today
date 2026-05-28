@@ -35,14 +35,12 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v5
         with:
-          node-version: lts/*
+          node-version: 24
           cache: "npm"
       - name: Install dependencies
         run: npm ci
-      - name: Clear Puppeteer cache
-        run: rm -rf ~/.cache/puppeteer
       - name: Install Chrome for Puppeteer
-        run: npx puppeteer browsers install chrome
+        run: npx puppeteer install chrome
       - name: Scrape data
         run: npm run scrape
       - name: Build
