@@ -1,5 +1,9 @@
 {
-  "map2": "ROOTS",
-  "map3": "MESA"
+  "maps": [
+    "SHORE",
+    "ROOTS",
+    "ALPINE",
+    "GLOOM",
+    "CITADEL"
+  ]
 }
-

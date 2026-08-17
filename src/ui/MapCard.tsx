@@ -2,8 +2,7 @@ import TiltedCard from "@/components/TiltedCard";
 
 type MapCardProps = { mapImagePath: string; mapName: string };
 export default function MapCard({ mapImagePath, mapName }: MapCardProps) {
-  // Responsive size: min 200px, prefers ~45vw, max 420px
-  const size = "clamp(100px, 30vh, 400px)" as React.CSSProperties["width"];
+  const size = "clamp(160px, 22vw, 260px)" as React.CSSProperties["width"];
 
   return (
     <div className="flex items-center justify-center">
