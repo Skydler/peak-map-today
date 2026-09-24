@@ -20,10 +20,21 @@ const browser = await puppeteer.launch({
 
 try {
   const page = await browser.newPage();
-  await page.goto("https://peak.wiki.gg", { waitUntil: "domcontentloaded" });
-  await page.waitForSelector("a.peakTimerBiome4");
+  const response = await page.goto("https://peak.wiki.gg", {
+    waitUntil: "domcontentloaded",
+  });
 
-  const maps = await page.$$eval("a[class*='peakTimerBiome']", (links) =>
+  if (!response?.ok()) {
+    throw new Error(`PEAK Wiki returned ${response?.status() ?? "no response"}`);
+  }
+
+  // The wiki fills this container asynchronously; avoid relying on an index-specific class.
+  await page.waitForFunction(
+    () => document.querySelectorAll(".peakTimerLower a").length === 5,
+    { timeout: 60_000 },
+  );
+
+  const maps = await page.$$eval(".peakTimerLower a", (links) =>
     links.map((link) => link.textContent?.trim().toUpperCase() ?? ""),
   );
 
