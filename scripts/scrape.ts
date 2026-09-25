@@ -25,28 +25,35 @@ try {
   });
 
   if (!response?.ok()) {
-    throw new Error(`PEAK Wiki returned ${response?.status() ?? "no response"}`);
+    const status = response?.status() ?? "no response";
+    if (status === 403) {
+      console.warn(
+        "PEAK Wiki denied the automated request (403); keeping the checked-in map rotation.",
+      );
+    } else {
+      throw new Error(`PEAK Wiki returned ${status}`);
+    }
+  } else {
+    // The wiki fills this container asynchronously; avoid relying on an index-specific class.
+    await page.waitForFunction(
+      () => document.querySelectorAll(".peakTimerLower a").length === 5,
+      { timeout: 60_000 },
+    );
+
+    const maps = await page.$$eval(".peakTimerLower a", (links) =>
+      links.map((link) => link.textContent?.trim().toUpperCase() ?? ""),
+    );
+
+    if (maps.length !== 5 || maps.some((map) => !validMaps.has(map))) {
+      throw new Error(`Unexpected biome rotation: ${maps.join(", ")}`);
+    }
+
+    await fs.writeFile(
+      new URL("../src/assets/map.json", import.meta.url),
+      JSON.stringify({ maps }, null, 2) + "\n",
+    );
+    console.log("Map rotation saved.");
   }
-
-  // The wiki fills this container asynchronously; avoid relying on an index-specific class.
-  await page.waitForFunction(
-    () => document.querySelectorAll(".peakTimerLower a").length === 5,
-    { timeout: 60_000 },
-  );
-
-  const maps = await page.$$eval(".peakTimerLower a", (links) =>
-    links.map((link) => link.textContent?.trim().toUpperCase() ?? ""),
-  );
-
-  if (maps.length !== 5 || maps.some((map) => !validMaps.has(map))) {
-    throw new Error(`Unexpected biome rotation: ${maps.join(", ")}`);
-  }
-
-  await fs.writeFile(
-    new URL("../src/assets/map.json", import.meta.url),
-    JSON.stringify({ maps }, null, 2) + "\n",
-  );
-  console.log("Map rotation saved.");
 } finally {
   await browser.close();
 }
