@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import puppeteer from "puppeteer";
 
 const validMaps = new Set([
   "SHORE",
@@ -13,47 +12,46 @@ const validMaps = new Set([
   "CITADEL",
 ]);
 
-const browser = await puppeteer.launch({
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-  args: ["--no-sandbox", "--disable-setuid-sandbox"], // necessary for github action runner
-});
+const api =
+  "https://peak.wiki.gg/api.php?action=query&format=json&formatversion=2&prop=revisions&rvprop=content&rvslots=main&titles=";
 
-try {
-  const page = await browser.newPage();
-  const response = await page.goto("https://peak.wiki.gg", {
-    waitUntil: "domcontentloaded",
-  });
-
-  if (!response?.ok()) {
-    const status = response?.status() ?? "no response";
-    if (status === 403) {
-      console.warn(
-        "PEAK Wiki denied the automated request (403); keeping the checked-in map rotation.",
-      );
-    } else {
-      throw new Error(`PEAK Wiki returned ${status}`);
-    }
-  } else {
-    // The wiki fills this container asynchronously; avoid relying on an index-specific class.
-    await page.waitForFunction(
-      () => document.querySelectorAll(".peakTimerLower a").length === 5,
-      { timeout: 60_000 },
-    );
-
-    const maps = await page.$$eval(".peakTimerLower a", (links) =>
-      links.map((link) => link.textContent?.trim().toUpperCase() ?? ""),
-    );
-
-    if (maps.length !== 5 || maps.some((map) => !validMaps.has(map))) {
-      throw new Error(`Unexpected biome rotation: ${maps.join(", ")}`);
-    }
-
-    await fs.writeFile(
-      new URL("../src/assets/map.json", import.meta.url),
-      JSON.stringify({ maps }, null, 2) + "\n",
-    );
-    console.log("Map rotation saved.");
+const getPage = async (title: string): Promise<string> => {
+  const response = await fetch(api + title);
+  if (!response.ok) {
+    throw new Error(`PEAK Wiki returned ${response.status}`);
   }
-} finally {
-  await browser.close();
+  const data = await response.json();
+  return data.query.pages[0].revisions[0].slots.main.content;
+};
+
+const schedule = JSON.parse(await getPage("MediaWiki:Maps.json"));
+const maps = (schedule.biomes as { biome: string }[][]).map((day) =>
+  day.map((entry) => entry.biome.toUpperCase()),
+);
+
+if (
+  maps.some(
+    (day) => day.length !== 5 || day.some((map) => !validMaps.has(map)),
+  )
+) {
+  throw new Error("Unexpected biome rotation");
 }
+
+const js = await getPage("MediaWiki:Common.js");
+const value = (name: string) =>
+  Number(js.match(new RegExp(`const ${name} = (\\d+)`))?.[1]);
+const start = new Date(
+  Date.UTC(
+    value("RESET_YEAR"),
+    value("RESET_MONTH") - 1,
+    value("RESET_DAY"),
+    value("RESET_HOUR_UTC"),
+    value("RESET_MINUTE_UTC"),
+  ),
+).toISOString();
+
+await fs.writeFile(
+  new URL("../src/assets/map.json", import.meta.url),
+  JSON.stringify({ start, maps }, null, 2) + "\n",
+);
+console.log("Map rotation saved.");
