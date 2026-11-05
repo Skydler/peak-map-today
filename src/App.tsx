@@ -23,7 +23,8 @@ type MapKey =
   | "GLOOM"
   | "CITADEL";
 type CurrentMapsType = {
-  maps: MapKey[];
+  start: string;
+  maps: MapKey[][];
 };
 
 const mapDefinitions: Record<MapKey, { image: string; name: string }> = {
@@ -48,6 +49,11 @@ const App = () => {
     nextReset.setUTCDate(nextReset.getUTCDate() + 1);
   }
   const timeDiff = nextReset.getTime() - now.getTime();
+  const days = Math.floor(
+    (nextReset.getTime() - Date.parse(currentMaps.start)) / 86400000 - 1,
+  );
+  const count = currentMaps.maps.length;
+  const todaysMaps = currentMaps.maps[((days % count) + count) % count];
 
   return (
     <CampfireBackgroundLayout>
@@ -56,7 +62,7 @@ const App = () => {
         <p className="text-2xl">Today's biomes are</p>
       </div>
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 justify-items-center gap-5 px-5 py-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {currentMaps.maps.map((mapKey) => {
+        {todaysMaps.map((mapKey) => {
           const map = mapDefinitions[mapKey];
 
           return (
